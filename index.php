@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+	<title>Location</title>
+	<style>
+		body {
+			background-color: darkgray;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#wrapper {
+			display: flex;
+			flex-direction: column;
+			height: 400px;
+			width: 300px;
+			background-color: #0D0208;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			/* bring your own prefixes */
+			transform: translate(-50%, -50%);
+		}
+
+		button {
+			height: 100px;
+			width: 200px;
+			margin: 30px auto 30px auto;
+			color: #008F11;
+			background-color: #0D0208;
+			font-size: 28px;
+			text-align: center;
+			display: inline-block;
+			transition-duration: 0.4s;
+			cursor: pointer;
+			border-radius: 5px;
+			border: 5px solid #2D2D2D;
+			box-shadow: none;
+		}
+
+		button:hover {
+			background-color: #2D2D2D;
+			border: 5px solid #2D2D2D;
+			;
+		}
+
+		#latitude {
+			display: inline-block;
+			height: 40px;
+			width: 200px;
+			margin: 10px auto;
+			padding: 10px 0px;
+			background-color: green;
+			color: white;
+			font-size: 20px;
+			line-height: 40px;
+			height: 40px;
+			text-align: center;
+		}
+
+		#longitude {
+			display: inline-block;
+			height: 40px;
+			width: 200px;
+			margin: 5px auto;
+			padding: 10px 0px;
+			background-color: green;
+			color: white;
+			font-size: 20px;
+			line-height: 40px;
+			height: 40px;
+			text-align: center;
+		}
+
+		#result {
+			height: 40px;
+			width: 200px;
+			margin: 0px auto;
+			color: gray;
+			background-color: 0D0208;
+			font-size: 20px;
+			text-align: center;
+			line-height: 40px;
+		}
+
+
+		
+		
+	</style>
+	<script>
+		// Global variable
+		var result;
+
+		// Store the element where the page displays the result
+		function showPosition() {
+			result = document.getElementById("result");
+			disableReset();
+
+			// If geolocation is available, try to get the visitor's position
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+				result.innerHTML = "PROCCESSING...";
+				latitude.innerHTML = "???";
+				longitude.innerHTML = "???";
+			} else {
+				alert("Sorry, your browser does not support HTML5 geolocation.");
+			}
+		};
+
+		// Define callback function for successful attempt
+		function successCallback(position) {
+			//result.innerHTML = " Latitude: " + position.coords.latitude.toFixed(6) + " , " + " Longitude: " + position.coords.longitude.toFixed(6);
+			//latitude.innerHTML = " Latitude: " + position.coords.latitude.toFixed(6);
+			//longitude.innerHTML = " Longitude: " + position.coords.longitude.toFixed(6);
+			button.innerHTML = "U R HERE";
+			result.innerHTML = "DONE";
+			latitude.innerHTML = toDegreesMinutesAndSeconds("latitude", position.coords.latitude);
+			longitude.innerHTML = toDegreesMinutesAndSeconds("longitude", position.coords.longitude);
+			if (button.innerHTML == "U R HERE") {
+				enableReset();
+			}
+		}
+
+		// Display location in Degrees, Min, Secs
+		function toDegreesMinutesAndSeconds(lines, coordinate) {
+			var absolute = Math.abs(coordinate);
+			var degrees = Math.floor(absolute);
+			var minutesNotTruncated = (absolute - degrees) * 60;
+			var minutes = Math.floor(minutesNotTruncated);
+			var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+			if (lines == "latitude" & coordinate > 0) {
+				dir = "N";
+			} else if (lines == "latitude" & coordinate < 0) {
+				dir = "S";
+			} else if (lines == "longitude" & coordinate > 0) {
+				dir = "E";
+			} else {
+				dir = "W";
+			}
+			return degrees + " ° " + minutes + " \' " + seconds + " \" " + dir;
+		}
+
+		// Define callback function for failed attempt
+		function errorCallback(error) {
+			if (error.code == 1) {
+				result.innerHTML = "You've decided not to share your position, but it's OK. We won't ask you again.";
+			} else if (error.code == 2) {
+				result.innerHTML = "The network is down or the positioning service can't be reached.";
+			} else if (error.code == 3) {
+				result.innerHTML = "The attempt timed out before it could get the location data.";
+			} else {
+				result.innerHTML = "Geolocation failed due to unknown error.";
+			}
+		}
+
+		// Disable reset button
+		function disableReset() {
+			document.getElementById("reset").disabled = true;
+			document.getElementById("reset").style.color = "gray";
+			document.getElementById("reset").style.opacity = ".1";
+
+		}
+
+		// Enable reset button
+		function enableReset() {
+			reset.disabled = false;
+			document.getElementById("reset").style.color = "green";
+			document.getElementById("reset").style.opacity = "1";
+		}
+
+	</script>
+</head>
+
+<body onload="disableReset()">
+	<div id="wrapper">
+		<div id="banner">
+		</div>
+		<button id="button" type="button" onclick="showPosition();">Where Am I</button>
+		<div id="latitude">LATITUDE ?</div>
+		<div id="longitude">LONGITUDE ?</div>
+		<div id="result">STATUS: waiting</div>
+		<button id="reset" type="button" onClick="window.location.reload(true)">Reset</button>
+	</div>
+</body>
+
+</html>
