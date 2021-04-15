@@ -85,9 +85,16 @@
 			line-height: 40px;
 		}
 
-
-		
-		
+		.blinking{
+    animation:blinkingText 1.2s infinite;
+        }
+        @keyframes blinkingText{
+            0%{     color: #999;    }
+            49%{    color: #999; }
+            60%{    color: transparent; }
+            99%{    color:transparent;  }
+            100%{   color: #999;    }
+        }
 	</style>
 	<script>
 		// Global variable
@@ -176,8 +183,8 @@
 <body onload="disableReset()">
 	<div id="wrapper">
 		<div id="banner">
-		</div>
-		<button id="button" type="button" onclick="showPosition();">Where Am I</button>
+		</div>				 
+		<button id="button" type="button" onclick="showPosition();"><span class="blinking">Where Am I</span></button>
 		<div id="latitude">LATITUDE ?</div>
 		<div id="longitude">LONGITUDE ?</div>
 		<div id="result">STATUS: waiting</div>
